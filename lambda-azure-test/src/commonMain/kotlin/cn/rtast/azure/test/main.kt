@@ -5,7 +5,7 @@
  */
 
 
-package cn.rtast.kazure.test
+package cn.rtast.azure.test
 
 import cn.rtast.runtime.runAzureLambda
 import io.ktor.server.response.*

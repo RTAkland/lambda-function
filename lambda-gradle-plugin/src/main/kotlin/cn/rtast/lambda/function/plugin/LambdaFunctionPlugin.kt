@@ -9,100 +9,16 @@ package cn.rtast.lambda.function.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.bundling.Zip
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import java.io.File
 
+@Suppress("Unused")
 class LambdaFunctionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
-        val ext = extensions.create("azureFunction", LambdaFunctionExtension::class.java)
-        ext.hostJsonFile.convention(layout.projectDirectory.file("/host.json").asFile)
+        val ext = extensions.create("lambdaFunction", LambdaFunctionExtension::class.java)
+        ext.hostJsonFile.convention(layout.projectDirectory.file("host.json").asFile)
         ext.localSettingsFile.convention(layout.projectDirectory.file("local.settings.json").asFile)
-        plugins.withId("org.jetbrains.kotlin.multiplatform") {
-            val kmp = extensions.getByType(KotlinMultiplatformExtension::class.java)
+        ext.functionJsonFile.convention(layout.projectDirectory.file("function.json").asFile)
+        ext.enableAzureFunction.convention(true)
 
-            kmp.targets.configureEach { target ->
-                if (target is KotlinNativeTarget) {
-                    registerPackageTask(project, target, ext)
-                }
-            }
-
-            tasks.register("azureFunctionRun", Exec::class.java) { task ->
-                val currentPlatform = currentPlatform()
-                task.doFirst {
-                    applyConfigFiles(project, ext, currentPlatform)
-                    copyExecutable(project, currentPlatform.replaceFirstChar { it.lowercase() }, "debugExecutable")
-                }
-                task.group = "azure-function"
-                task.description = "Package Azure Function for $currentPlatform"
-                task.dependsOn(tasks.named("linkDebugExecutable${currentPlatform}"))
-                val outputDir = project.layout.buildDirectory.dir("run-azure-function").get().asFile.apply { mkdirs() }
-                task.workingDir(outputDir)
-                task.commandLine("func", "start")
-            }
-        }
-    }
-
-    private fun registerPackageTask(project: Project, target: KotlinNativeTarget, ext: LambdaFunctionExtension) {
-        val targetName = target.name
-        val capName = targetName.replaceFirstChar { it.uppercase() }
-        val taskName = "package$capName"
-
-        project.tasks.register(taskName) { task ->
-            task.group = "azure-function"
-            task.description = "Package Azure Function for $targetName"
-            task.doFirst { applyConfigFiles(project, ext, targetName) }
-            val linkTaskName = "linkReleaseExecutable$capName"
-            task.dependsOn(project.tasks.matching { it.name == linkTaskName })
-            task.doLast { copyExecutable(project, targetName, "releaseExecutable") }
-        }
-
-        val zipTaskName = "zip$capName"
-        project.tasks.register(zipTaskName, Zip::class.java) { zip ->
-            zip.group = "azure-function"
-            zip.description = "Zip Azure Function package for $targetName"
-            zip.dependsOn(taskName)
-
-            zip.from(project.layout.buildDirectory.dir("run-azure-function"))
-            zip.archiveFileName.set(
-                "${project.name}-${project.version}-$targetName.zip"
-            )
-            zip.destinationDirectory.set(project.layout.buildDirectory.dir("dist"))
-        }
-
-        project.tasks.named(taskName).configure { it.finalizedBy(zipTaskName) }
-    }
-
-    private fun copyExecutable(project: Project, targetName: String, buildTypeDir: String) {
-        val exeName = buildExecutableName(project.name, targetName)
-        val buildDir = project.layout.buildDirectory.get().asFile
-        val src = buildDir.resolve("bin/$targetName/$buildTypeDir/$exeName")
-        val outputDir = buildDir.resolve("run-azure-function").apply { mkdirs() }
-        if (!src.exists()) error("Executable not found at $src; did the link task run?")
-        val dest = outputDir.resolve(exeName)
-        src.copyTo(dest, overwrite = true)
-        if (!targetName.startsWith("mingw")) dest.setExecutable(true, false)
-    }
-
-    private fun buildExecutableName(moduleName: String, targetName: String): String {
-        val ext = if (targetName.startsWith("mingw")) "exe" else "kexe"
-        return "$moduleName.$ext"
-    }
-
-    private fun applyConfigFiles(project: Project, ext: LambdaFunctionExtension, targetName: String) {
-        val outputDir = project.layout.buildDirectory.dir("run-azure-function").get().asFile.apply { mkdirs() }
-        fun copyOrWrite(source: File?, relativePath: String, transform: (String) -> String = { it }) {
-            val dest = outputDir.resolve(relativePath)
-            dest.parentFile.mkdirs()
-            val content = source?.readText() ?: readResource(relativePath)
-            dest.writeText(transform(content))
-        }
-
-        val exeName = buildExecutableName(project.name, targetName)
-        copyOrWrite(ext.hostJsonFile.orNull, "host.json") { it.replace("{{AUTO_DETECTED}}", exeName) }
-        copyOrWrite(ext.functionJsonFile.orNull, "deledate_/function.json")
-        copyOrWrite(ext.localSettingsFile.orNull, "local.settings.json")
+        if (ext.enableAzureFunction.get()) AzureFunctionTask.registerExtension(target, ext)
     }
 }

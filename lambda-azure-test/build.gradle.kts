@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.0.1"
+    id("cn.rtast.lambdafunction") version "0.0.2"
 }
 
 repositories {
@@ -16,7 +16,7 @@ kotlin {
     targets.withType<KotlinNativeTarget>().configureEach {
         binaries {
             executable {
-                entryPoint = "cn.rtast.kazure.test.main"
+                entryPoint = "cn.rtast.azure.test.main"
             }
         }
     }
@@ -28,13 +28,14 @@ kotlin {
     }
 }
 
-azureFunction {
+
+lambdaFunction {
     hostJsonFile = rootProject.layout.projectDirectory
-        .dir("kazure-gradle-plugin/src/main/resources/host.json").asFile
+        .dir("lambda-gradle-plugin/src/main/resources/host.json").asFile
     functionJsonFile = rootProject.layout.projectDirectory
-        .dir("kazure-gradle-plugin/src/main/resources/function.json").asFile
+        .dir("lambda-gradle-plugin/src/main/resources/function.json").asFile
     localSettingsFile = rootProject.layout.projectDirectory
-        .dir("kazure-gradle-plugin/src/main/resources/local.settings.json").asFile
+        .dir("lambda-gradle-plugin/src/main/resources/local.settings.json").asFile
 }
 
 tasks.withType<PublishToMavenRepository>().configureEach {

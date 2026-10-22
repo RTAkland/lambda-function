@@ -1,7 +1,7 @@
 /*
  * Copyright © 2026 rtakland
  * Author: rtakland
- * Date: 2026-10-22
+ * Date: 2026-10-23
  */
 
 
@@ -20,4 +20,7 @@ abstract class LambdaFunctionExtension {
 
     @get:Input
     abstract val functionJsonFile: Property<File?>
+
+    @get:Input
+    abstract val enableAzureFunction: Property<Boolean>
 }
