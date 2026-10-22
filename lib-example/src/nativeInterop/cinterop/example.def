@@ -1,3 +1,0 @@
-package = example
-headers = example.h
-staticLibraries = libexample.a

@@ -1,0 +1,23 @@
+/*
+ * Copyright © 2026 rtakland
+ * Author: rtakland
+ * Date: 2026-10-22
+ */
+
+
+package cn.rtast.lambda.function.plugin
+
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import java.io.File
+
+abstract class LambdaFunctionExtension {
+    @get:Input
+    abstract val hostJsonFile: Property<File?>
+
+    @get:Input
+    abstract val localSettingsFile: Property<File?>
+
+    @get:Input
+    abstract val functionJsonFile: Property<File?>
+}

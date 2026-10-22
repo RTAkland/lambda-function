@@ -1,0 +1,14 @@
+{
+  "version": "2.0",
+  "customHandler": {
+    "description": {
+      "defaultExecutablePath": "{{AUTO_DETECTED}}"
+    },
+    "enableProxyingHttpRequest": true
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": ""
+    }
+  }
+}

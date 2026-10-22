@@ -1,11 +1,13 @@
 plugins {
-    kotlin("multiplatform") version "2.4.21" apply false
-    id("maven-publish")
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.maven.publish)
 }
 
 allprojects {
-    group = "cn.rtast.example"
-    if (name != rootProject.name) version = property("version.$name")!!
+    group = "cn.rtast.lambdafunction"
+    property("version")!!
 
     repositories {
         mavenCentral()
@@ -13,7 +15,6 @@ allprojects {
 }
 
 subprojects {
-    pluginManager.apply("org.jetbrains.kotlin.multiplatform")
     pluginManager.apply("maven-publish")
 
     publishing {
@@ -34,9 +35,9 @@ subprojects {
 
         publications.withType<MavenPublication> {
             pom {
-                name = "example"
-                description = "Example"
-                url = "https://repo.rtast.cn/RTAkland/kmp-library-template"
+                name = "lambda-function"
+                description = "Kotlin Native Azure and AWS Lambda Serverless Framework"
+                url = "https://repo.rtast.cn/RTAkland/lambda-function"
                 licenses {
                     license {
                         name = "Apache-2.0"
