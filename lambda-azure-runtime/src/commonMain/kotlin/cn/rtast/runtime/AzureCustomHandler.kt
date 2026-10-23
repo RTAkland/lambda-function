@@ -32,7 +32,7 @@ private val RequestTracePlugin = createRouteScopedPlugin("RequestTracePlugin", {
 }
 
 private val onSigintFunc = staticCFunction<Int, Unit> { _ ->
-    LOGGER.info("SIGINT detected, exiting")
+    LOGGER.info("Signal SIGINT/SIGTERM detected, exiting")
     _exit(130)
 }
 
