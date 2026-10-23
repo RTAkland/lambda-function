@@ -11,6 +11,14 @@ ktor plugins supports native platform can be used on this runtime.
 `lambda-function` provided a Gradle plugin to running functions, packaging and deploy to Azure Portal,
 it's optional, but recommend to apply.
 
+## Install Azure Function dev tools
+
+> Before starting, you need to install `Azure Function Core Tools` and `Azure Command-Line Interface (CLI)`,
+> following Microsoft Azure documents to learn how to install
+
+- [Azure Function Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-java#install-the-azure-functions-core-tools)
+- [Azure Command-Line Interface (CLI)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+
 ## Apply Gradle Plugin
 
 ```kotlin
@@ -101,7 +109,7 @@ fun main(): Unit = runAzureLambda {
 
 # Deploying Function to Azure Portal
 
-> Login into Azure Portal by executing `az login` in terminal before execute Gradle task 
+> Login into Azure Portal by executing `az login` in terminal before execute Gradle task
 
 ```shell
 ./gradlew deployLinuxX64
@@ -110,12 +118,6 @@ fun main(): Unit = runAzureLambda {
 
 # Running Function Manually
 
-> Before starting, you need to install `Azure Function Core Tools` and `Azure Command-Line Interface (CLI)`,
-> following Microsoft Azure documents to learn how to install
-
-- [Azure Function Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-java#install-the-azure-functions-core-tools)
-- [Azure Command-Line Interface (CLI)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-
 <details>
 <summary>Click to expand contents</summary>
 
@@ -123,12 +125,14 @@ fun main(): Unit = runAzureLambda {
 
 The function run directory file tree should look like:
 
+```text
 .
 ├── azure-test.kexe
 ├── delegate_
 │ └── function.json
 ├── host.json
 └── local.settings.json
+```
 
 ```shell
 ./gradlew linkReleaseExecutableLinuxX64
@@ -170,4 +174,5 @@ func azure functionapp publish myfunction
 </details>
 
 # Open Source
+
 `lambda-function` Licensed under [Apache-2.0](LICENSE)
