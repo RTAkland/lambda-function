@@ -112,7 +112,7 @@ object AzureFunctionTask {
 
         val exeName = buildExecutableName(project.name, targetName)
         copyOrWrite(ext.hostJsonFile.orNull, "host.json") { it.replace("{{AUTO_DETECTED}}", exeName) }
-        copyOrWrite(ext.functionJsonFile.orNull, "deledate_/function.json")
+        copyOrWrite(ext.functionJsonFile.orNull, "delegate_/function.json")
         copyOrWrite(ext.localSettingsFile.orNull, "local.settings.json")
     }
 }

@@ -13,6 +13,10 @@ import io.ktor.server.routing.*
 
 fun main(): Unit = runAzureLambda {
     routing {
+        get("/") {
+            call.respond("Hello index")
+        }
+
         get("/{name}") {
             call.respond("Hello ${call.pathParameters["name"]}")
         }
