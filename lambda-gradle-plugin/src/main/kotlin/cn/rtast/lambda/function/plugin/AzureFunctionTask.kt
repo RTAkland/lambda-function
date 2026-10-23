@@ -22,6 +22,7 @@ object AzureFunctionTask {
             kmp.targets.configureEach { target ->
                 if (target is KotlinNativeTarget) {
                     registerPackageTask(project, target, ext)
+                    registerDeployTasks(project, target.name, ext.appName.get())
                 }
             }
 
@@ -70,6 +71,18 @@ object AzureFunctionTask {
             zip.destinationDirectory.set(project.layout.buildDirectory.dir("dist"))
         }
         project.tasks.named(taskName).configure { it.finalizedBy(zipTaskName) }
+    }
+
+    private fun registerDeployTasks(project: Project, target: String, appName: String) {
+        project.tasks.register("deploy${target.replaceFirstChar { it.uppercase() }}", Exec::class.java) { task ->
+            val currentPlatform = currentPlatform()
+            task.group = "azure-function"
+            task.description = "Deploy Azure Function for $currentPlatform"
+            task.dependsOn(project.tasks.named("package${currentPlatform}"))
+            val outputDir = project.layout.buildDirectory.dir("run-azure-function").get().asFile.apply { mkdirs() }
+            task.workingDir(outputDir)
+            task.commandLine("func", "azure", "functionapp", "publish", appName)
+        }
     }
 
     private fun copyExecutable(project: Project, targetName: String, buildTypeDir: String) {

@@ -23,4 +23,7 @@ abstract class LambdaFunctionExtension {
 
     @get:Input
     abstract val enableAzureFunction: Property<Boolean>
+
+    @get:Input
+    abstract val appName: Property<String>
 }

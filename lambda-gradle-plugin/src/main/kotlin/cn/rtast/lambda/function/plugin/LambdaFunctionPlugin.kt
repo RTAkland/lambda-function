@@ -18,6 +18,7 @@ class LambdaFunctionPlugin : Plugin<Project> {
         ext.localSettingsFile.convention(layout.projectDirectory.file("local.settings.json").asFile)
         ext.functionJsonFile.convention(layout.projectDirectory.file("function.json").asFile)
         ext.enableAzureFunction.convention(true)
+        ext.appName.convention("lambda-function-sample")
 
         if (ext.enableAzureFunction.get()) AzureFunctionTask.registerExtension(target, ext)
     }
