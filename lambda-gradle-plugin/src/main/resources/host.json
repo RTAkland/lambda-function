@@ -2,7 +2,8 @@
   "version": "2.0",
   "customHandler": {
     "description": {
-      "defaultExecutablePath": "{{AUTO_DETECTED}}"
+      "defaultExecutablePath": "{{AUTO_DETECTED}}",
+      "arguments": []
     },
     "enableProxyingHttpRequest": true
   },

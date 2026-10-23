@@ -36,7 +36,7 @@ subprojects {
         publications.withType<MavenPublication> {
             pom {
                 name = "lambda-function"
-                description = "Kotlin Native Azure and AWS Lambda Serverless Framework"
+                description = "Kotlin Native Azure Function Custom Handler Runtime based on ktor(native)"
                 url = "https://repo.rtast.cn/RTAkland/lambda-function"
                 licenses {
                     license {

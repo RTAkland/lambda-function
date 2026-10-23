@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.0.2"
+    id("cn.rtast.lambdafunction") version "0.0.3"
 }
 
 repositories {
@@ -14,11 +14,7 @@ kotlin {
     mingwX64()
 
     targets.withType<KotlinNativeTarget>().configureEach {
-        binaries {
-            executable {
-                entryPoint = "cn.rtast.azure.test.main"
-            }
-        }
+        binaries { executable { entryPoint = "cn.rtast.azure.test.main" } }
     }
 
     sourceSets {
