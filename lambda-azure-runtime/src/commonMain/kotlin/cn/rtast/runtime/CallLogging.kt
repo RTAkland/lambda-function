@@ -8,12 +8,11 @@
 package cn.rtast.runtime
 
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
-import io.ktor.server.request.*
+import io.ktor.server.logging.*
 import io.ktor.util.logging.*
 
-public val LOGGER: Logger = KtorSimpleLogger("cn.rtast.lambdafunction.RequestCallLoggingPlugin")
+public val LOGGER: Logger = KtorSimpleLogger("RequestCallLogging")
 
 internal val RequestCallLoggingPlugin = createRouteScopedPlugin("RequestCallLoggingPlugin", { }) {
-    onCall { with(it.request) { LOGGER.info("${origin.remoteHost} : ${httpMethod.value} $uri") } }
+    onCall { with(it.request) { LOGGER.info(toLogString()) } }
 }

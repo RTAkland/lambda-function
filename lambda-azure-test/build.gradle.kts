@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.0.3"
+    id("cn.rtast.lambdafunction") version "0.0.4"
 }
 
 repositories {
@@ -32,6 +32,7 @@ lambdaFunction {
         .dir("lambda-gradle-plugin/src/main/resources/function.json").asFile
     localSettingsFile = rootProject.layout.projectDirectory
         .dir("lambda-gradle-plugin/src/main/resources/local.settings.json").asFile
+    customResources.addAll(*file("src/commonMain/resources").listFiles())
 }
 
 tasks.withType<PublishToMavenRepository>().configureEach {

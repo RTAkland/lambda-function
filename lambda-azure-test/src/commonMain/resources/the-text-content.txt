@@ -1,0 +1,103 @@
+#!/usr/bin/env kotlin
+
+import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
+val matchPattern = byteArrayOf(0x29, 0xf2.toByte(), 0x4c, 0x8d.toByte(), 0x44, 0x24)
+
+data class ExecSegment(val offset: Long, val vaddr: Long, val filesz: Long)
+
+fun readELFSegment(data: ByteArray): ExecSegment {
+    if (data.size < 4 ||
+        data[0] != 0x7f.toByte() ||
+        data[1] != 'E'.code.toByte() ||
+        data[2] != 'L'.code.toByte() ||
+        data[3] != 'F'.code.toByte()
+    ) error("Not an ELF file")
+    if (data[4] != 2.toByte()) error("Not ELF64")
+    val bb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+    val ePhoff = bb.getLong(0x20)
+    val ePhentsize = bb.getShort(0x36).toInt() and 0xFFFF
+    val ePhnum = bb.getShort(0x38).toInt() and 0xFFFF
+    for (i in 0..<ePhnum) {
+        val off = (ePhoff + i * ePhentsize).toInt()
+        val pType = bb.getInt(off)
+        val pFlags = bb.getInt(off + 4)
+        val pOffset = bb.getLong(off + 0x08)
+        val pVaddr = bb.getLong(off + 0x10)
+        val pFilesz = bb.getLong(off + 0x20)
+        if (pType == 1 && (pFlags and 1) != 0) return ExecSegment(pOffset, pVaddr, pFilesz)
+    }
+    error("No executable PT_LOAD segment found")
+}
+
+fun indexOf(data: ByteArray, pattern: ByteArray, from: Int, to: Int): Int {
+    outer@ for (i in from..(to - pattern.size)) {
+        for (j in pattern.indices) if (data[i + j] != pattern[j]) continue@outer
+        return i
+    }
+    return -1
+}
+
+fun extractSignOffset(path: String): Long {
+    val data = File(path).readBytes()
+    val (textOffset, textVaddr, textSize) = readELFSegment(data)
+    val textDelta = textVaddr - textOffset
+    val bb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+    val matches = mutableListOf<Int>()
+    var idx = textOffset.toInt()
+    val end = (textOffset + textSize).toInt()
+    while (true) {
+        idx = indexOf(data, matchPattern, idx, end)
+        if (idx == -1) break
+        matches += idx
+        idx += 1
+    }
+    if (matches.isEmpty()) error("Pattern not found")
+    if (matches.size > 1) error("Pattern matched ${matches.size} times (expected 1)")
+    val match = matches[0]
+    val preStart = maxOf(0, match - 12)
+    val hasMov = (preStart..<match).any { data[it] == 0x8b.toByte() }
+    if (!hasMov) error("Pre-check failed: no mov instruction before pattern")
+    val stackOffset = data[match + 6].toInt() and 0xFF
+    if (stackOffset !in 0x20..0x80) error("Stack offset 0x%02x out of range".format(stackOffset))
+    var e8Offset = -1
+    for (i in (match + 6)..<(match + 20)) {
+        if (data[i] == 0xE8.toByte()) {
+            e8Offset = i; break
+        }
+    }
+    if (e8Offset == -1) error("CALL instruction (0xE8) not found after pattern")
+
+    val disp = bb.getInt(e8Offset + 1)
+    val callVa = e8Offset + textDelta
+    val targetVa = callVa + 5 + disp
+    val prologueOff = (targetVa - textDelta).toInt()
+    val expected = byteArrayOf(0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41)
+    val actual = data.copyOfRange(prologueOff, prologueOff + 8)
+    if (!actual.contentEquals(expected))
+        error(
+            "Prologue mismatch at 0x%x: got %s, expected %s".format(
+            targetVa,
+            actual.joinToString("") { "%02x".format(it) },
+            expected.joinToString("") { "%02x".format(it) }
+        ))
+    return targetVa
+}
+
+fun main(args: Array<String>) {
+    if (args.size != 1) {
+        System.err.println("Usage: offset.kts <wrapper.node>")
+        kotlin.system.exitProcess(1)
+    }
+    try {
+        val offset = extractSignOffset(args[0])
+        println("0x%X".format(offset))
+    } catch (e: Exception) {
+        System.err.println("ERROR: ${e.message}")
+        kotlin.system.exitProcess(1)
+    }
+}
+
+main(args)

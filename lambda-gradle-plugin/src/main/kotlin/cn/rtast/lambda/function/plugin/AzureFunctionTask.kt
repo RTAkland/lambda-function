@@ -29,8 +29,9 @@ object AzureFunctionTask {
             tasks.register("azureFunctionRun", Exec::class.java) { task ->
                 val currentPlatform = currentPlatform()
                 task.doFirst {
-                    applyConfigFiles(project, ext, currentPlatform)
+                    copyConfigFiles(project, ext, currentPlatform)
                     copyExecutable(project, currentPlatform.replaceFirstChar { it.lowercase() }, "debugExecutable")
+                    copyResources(project, ext.customResources.get())
                 }
                 task.group = "azure-function"
                 task.description = "Package Azure Function for $currentPlatform"
@@ -50,10 +51,13 @@ object AzureFunctionTask {
         project.tasks.register(taskName) { task ->
             task.group = "azure-function"
             task.description = "Package Azure Function for $targetName"
-            task.doFirst { applyConfigFiles(project, ext, targetName) }
+            task.doFirst { copyConfigFiles(project, ext, targetName) }
             val linkTaskName = "linkReleaseExecutable$capName"
             task.dependsOn(project.tasks.matching { it.name == linkTaskName })
-            task.doLast { copyExecutable(project, targetName, "releaseExecutable") }
+            task.doLast {
+                copyExecutable(project, targetName, "releaseExecutable")
+                copyResources(project, ext.customResources.get())
+            }
         }
 
         val zipTaskName = "zip$capName"
@@ -85,6 +89,24 @@ object AzureFunctionTask {
         }
     }
 
+    private fun copyResources(project: Project, included: List<File>) {
+        val outputDir = project.layout.buildDirectory
+            .get().asFile
+            .resolve("run-azure-function")
+            .apply { mkdirs() }
+        included.forEach { src ->
+            if (src.exists()) {
+                val destFile = outputDir.resolve(src.name)
+                if (src.isDirectory) {
+                    src.copyRecursively(destFile, overwrite = true)
+                } else {
+                    destFile.parentFile.mkdirs()
+                    src.copyTo(destFile, overwrite = true)
+                }
+            }
+        }
+    }
+
     private fun copyExecutable(project: Project, targetName: String, buildTypeDir: String) {
         val exeName = buildExecutableName(project.name, targetName)
         val buildDir = project.layout.buildDirectory.get().asFile
@@ -101,7 +123,7 @@ object AzureFunctionTask {
         return "$moduleName.$ext"
     }
 
-    private fun applyConfigFiles(project: Project, ext: LambdaFunctionExtension, targetName: String) {
+    private fun copyConfigFiles(project: Project, ext: LambdaFunctionExtension, targetName: String) {
         val outputDir = project.layout.buildDirectory.dir("run-azure-function").get().asFile.apply { mkdirs() }
         fun copyOrWrite(source: File?, relativePath: String, transform: (String) -> String = { it }) {
             val dest = outputDir.resolve(relativePath)

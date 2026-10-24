@@ -44,12 +44,15 @@ repositories {
 
 /**
  * Configure the required json file to your own,
- * All options are optional, if not set, plugin fallbak to builtin config
+ * All options except `appName` are optional, if not set, plugin fallbak to builtin config
  */
 lambdaFunction {
+    appName = "myazurefunction"
     hostJsonFile = file("./host.json")
     functionJsonFile = file("./function.json")  // do not change this if you know what are you doing
     localSettingsFile = file("./local.settings.json")
+    // Including resources files
+    customResources.addAll(*file("src/commonMain/resources").listFiles())
 }
 ```
 
@@ -129,10 +132,10 @@ The function run directory file tree should look like:
 .
 ├── azure-test.kexe
 ├── delegate_
-│ └── function.json
+│   └── function.json
 ├── host.json
 └── local.settings.json
-```
+```0.0.
 
 ```shell
 ./gradlew linkReleaseExecutableLinuxX64
