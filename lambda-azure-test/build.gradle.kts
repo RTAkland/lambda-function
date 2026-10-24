@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.0.4"
+    id("cn.rtast.lambdafunction") version "0.1.0"
 }
 
 repositories {
