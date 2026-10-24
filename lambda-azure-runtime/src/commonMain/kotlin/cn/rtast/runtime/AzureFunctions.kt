@@ -29,9 +29,9 @@ public fun runAzureLambda(
             this@ec.port = port
         })
     }, module = { install(RequestCallLoggingPlugin) })
-        .startSuspend(wait = false)
     systemSignalDetector()
     module.invoke(server.application, server)
+    server.startSuspend(wait = false)
     shutdownSignal.await()
     server.stop(1000, 2000)
 }
