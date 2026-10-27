@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.1.0"
+    id("cn.rtast.lambdafunction") version "0.1.1"
 }
 
 repositories {
@@ -26,12 +26,6 @@ kotlin {
 
 
 lambdaFunction {
-    hostJsonFile = rootProject.layout.projectDirectory
-        .dir("lambda-gradle-plugin/src/main/resources/host.json").asFile
-    functionJsonFile = rootProject.layout.projectDirectory
-        .dir("lambda-gradle-plugin/src/main/resources/function.json").asFile
-    localSettingsFile = rootProject.layout.projectDirectory
-        .dir("lambda-gradle-plugin/src/main/resources/local.settings.json").asFile
     customResources.addAll(*file("src/commonMain/resources").listFiles())
 }
 

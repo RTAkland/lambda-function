@@ -10,17 +10,21 @@ package cn.rtast.lambda.function.plugin
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import java.io.File
 
 abstract class LambdaFunctionExtension {
     @get:Input
-    abstract val hostJsonFile: Property<File?>
+    @get:Optional
+    abstract val hostJsonFile: Property<File>
 
     @get:Input
-    abstract val localSettingsFile: Property<File?>
+    @get:Optional
+    abstract val localSettingsFile: Property<File>
 
     @get:Input
-    abstract val functionJsonFile: Property<File?>
+    @get:Optional
+    abstract val functionJsonFile: Property<File>
 
     @get:Input
     abstract val enableAzureFunction: Property<Boolean>
@@ -29,5 +33,6 @@ abstract class LambdaFunctionExtension {
     abstract val appName: Property<String>
 
     @get:Input
+    @get:Optional
     abstract val customResources: ListProperty<File>
 }

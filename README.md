@@ -34,7 +34,7 @@ pluginManagement {
 // build.gradle.kts
 plugins {
     // Replace the version to latest version
-    id("cn.rtast.lambdafunction") version "<version>"
+    id("cn.rtast.lambdafunction") version "0.1.1"
 }
 
 repositories {
@@ -59,7 +59,7 @@ lambdaFunction {
 ### Builtin config JSON files
 
 - [host.json](lambda-gradle-plugin/src/main/resources/host.json)
-- [function.json](lambda-gradle-plugin/src/main/resources/function.json)
+- [function.json](lambda-gradle-plugin/src/main/resources/delegate_/function.json)
 - [local.settings.json](lambda-gradle-plugin/src/main/resources/local.settings.json)
 
 ## Install dependencies
@@ -77,7 +77,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation("cn.rtast.lambdafunction:azure-runtime:<version>")
+            implementation("cn.rtast.lambdafunction:azure-runtime:0.1.1")
         }
     }
 }

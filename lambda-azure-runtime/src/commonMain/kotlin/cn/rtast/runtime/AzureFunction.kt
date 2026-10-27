@@ -20,6 +20,7 @@ import platform.posix.getenv
 public fun runAzureLambda(
     host: String = "127.0.0.1",
     port: Int = getenv("FUNCTIONS_CUSTOMHANDLER_PORT")?.toKString()?.toInt() ?: 8080,
+    signal: Boolean = true,
     module: suspend Application.(server: EmbeddedServer<CIOApplicationEngine, CIOApplicationEngine.Configuration>) -> Unit,
 ): Unit = runBlocking {
     val server = embeddedServer(CIO, configure = {
@@ -31,7 +32,7 @@ public fun runAzureLambda(
     }, module = { install(RequestCallLoggingPlugin) })
     module.invoke(server.application, server)
     server.startSuspend(wait = false)
-    systemSignalDetector()
+    if (signal) systemSignalDetector()
     shutdownSignal.await()
     server.stop(1000, 2000)
 }

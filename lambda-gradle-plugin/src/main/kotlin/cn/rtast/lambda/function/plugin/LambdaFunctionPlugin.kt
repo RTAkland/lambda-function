@@ -14,11 +14,8 @@ import org.gradle.api.Project
 class LambdaFunctionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         val ext = extensions.create("lambdaFunction", LambdaFunctionExtension::class.java)
-        ext.hostJsonFile.convention(layout.projectDirectory.file("host.json").asFile)
-        ext.localSettingsFile.convention(layout.projectDirectory.file("local.settings.json").asFile)
-        ext.functionJsonFile.convention(layout.projectDirectory.file("function.json").asFile)
         ext.enableAzureFunction.convention(true)
-        ext.appName.convention("lambda-function-sample")
+        ext.appName.convention("myazurefunction")
         ext.customResources.convention(emptyList())
 
         if (ext.enableAzureFunction.get()) AzureFunctionTask.registerExtension(target, ext)

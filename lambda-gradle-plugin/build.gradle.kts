@@ -10,7 +10,6 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
 }
 
-
 buildConfig {
     packageName(project.group.toString())
     buildConfigField("String", "KOTLIN_PLUGIN_ID", "\"${rootProject.group}\"")
@@ -19,10 +18,10 @@ buildConfig {
 
 gradlePlugin {
     plugins {
-        create("AzureFunctionsCustomHandler") {
+        create("LambdaFunction") {
             id = "cn.rtast.lambdafunction"
             displayName = "Lambda Function"
-            description = "Kotlin Native Azure and AWS Lambda Serverless Framework"
+            description = "Kotlin Native Serverless Function Runtime"
             implementationClass = "cn.rtast.lambda.function.plugin.LambdaFunctionPlugin"
         }
     }
