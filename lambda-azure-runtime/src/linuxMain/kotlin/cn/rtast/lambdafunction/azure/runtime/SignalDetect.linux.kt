@@ -6,7 +6,7 @@
 
 @file:OptIn(ExperimentalForeignApi::class)
 
-package cn.rtast.runtime
+package cn.rtast.lambdafunction.azure.runtime
 
 import kotlinx.cinterop.*
 import platform.posix.*

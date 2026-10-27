@@ -11,6 +11,7 @@ pluginManagement {
 
 includeSubModule("gradle-plugin")
 includeSubModule("azure-runtime")
+includeSubModule("cloudflare-runtime")
 includeSubModule("azure-test")
 
 fun includeSubModule(name: String, path: String? = null) {

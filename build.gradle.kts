@@ -14,7 +14,8 @@ allprojects {
     }
 }
 
-subprojects {
+subprojects s@{
+    if (this@s.name.contains("cloudflare")) return@s
     pluginManager.apply("maven-publish")
 
     publishing {

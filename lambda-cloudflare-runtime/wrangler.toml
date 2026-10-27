@@ -1,0 +1,6 @@
+name = "lambda-function-cloudflare-runtime"
+account_id = "111"
+workers_dev = false
+preview_urls = false
+compatibility_date = "2022-08-11"
+main = "lambda-function-cloudflare-runtime.js"

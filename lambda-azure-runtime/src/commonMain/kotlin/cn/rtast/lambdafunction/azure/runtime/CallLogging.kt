@@ -5,7 +5,7 @@
  */
 
 
-package cn.rtast.runtime
+package cn.rtast.lambdafunction.azure.runtime
 
 import io.ktor.server.application.*
 import io.ktor.server.logging.*

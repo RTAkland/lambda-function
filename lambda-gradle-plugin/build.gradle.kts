@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
@@ -25,4 +27,13 @@ gradlePlugin {
             implementationClass = "cn.rtast.lambda.function.plugin.LambdaFunctionPlugin"
         }
     }
+}
+
+tasks.compileKotlin {
+    compilerOptions.jvmTarget = JvmTarget.JVM_11
+}
+
+tasks.compileJava {
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
 }

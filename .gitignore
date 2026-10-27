@@ -54,3 +54,4 @@ bin/
 
 .idea/
 .gradle/
+/kotlin-js-store/

@@ -7,7 +7,7 @@
 
 package cn.rtast.azure.test
 
-import cn.rtast.runtime.runAzureLambda
+import cn.rtast.lambdafunction.azure.runtime.runAzureLambda
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.io.files.Path
