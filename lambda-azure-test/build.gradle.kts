@@ -19,16 +19,15 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":azure-runtime"))
+            implementation(project(":azure-runtime-cio"))
+//            implementation(project(":azure-runtime-nghttp2"))
         }
     }
+
+    compilerOptions.freeCompilerArgs.addAll("-Xcompanion-blocks-and-extensions")
 }
 
 
 lambdaFunction {
-    customResources.addAll(*file("src/commonMain/resources").listFiles())
-}
-
-tasks.withType<PublishToMavenRepository>().configureEach {
-    enabled = false
+    customResources.addAll(*file("src/commonMain/resources").listFiles(), file("certs"))
 }

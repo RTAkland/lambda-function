@@ -10,7 +10,9 @@ pluginManagement {
 }
 
 includeSubModule("gradle-plugin")
-includeSubModule("azure-runtime")
+includeSubModule("azure-runtime-core")
+includeSubModule("azure-runtime-cio")
+includeSubModule("azure-runtime-nghttp2")
 includeSubModule("cloudflare-runtime")
 includeSubModule("azure-test")
 

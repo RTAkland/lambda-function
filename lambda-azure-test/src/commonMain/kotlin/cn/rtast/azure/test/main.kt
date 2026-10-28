@@ -10,13 +10,16 @@ package cn.rtast.azure.test
 import cn.rtast.lambdafunction.azure.runtime.runAzureLambda
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.utils.io.*
+import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
+
 
 fun main(): Unit = runAzureLambda {
     routing {
         get("/") {
-            call.respondSource(SystemFileSystem.source(Path("the-text-content.txt")))
+            call.respondText(SystemFileSystem.source(Path("certs/server.crt")).buffered().use { it.readText() })
         }
 
         get("/{name}") {
