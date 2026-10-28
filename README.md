@@ -77,7 +77,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation("cn.rtast.lambdafunction:azure-runtime:0.1.1")
+            implementation("cn.rtast.lambdafunction:azure-runtime-cio:0.1.1")
         }
     }
 }
