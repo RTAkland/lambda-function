@@ -14,8 +14,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.io.File
 
-object AzureFunctionTask {
-    fun registerExtension(target: Project, ext: LambdaFunctionExtension) = with(target) {
+public object AzureFunctionTask {
+    public fun registerExtension(target: Project, ext: LambdaFunctionExtension): Unit = with(target) {
         plugins.withId("org.jetbrains.kotlin.multiplatform") {
             val kmp = extensions.getByType(KotlinMultiplatformExtension::class.java)
 

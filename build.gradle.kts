@@ -16,10 +16,7 @@ allprojects {
 }
 
 subprojects s@{
-    if (this@s.name.contains("cloudflare")
-        || this@s.name.contains("test")
-        || this@s.name.contains("nghttp2")
-    ) return@s
+    if (this@s.name.contains("test") || this@s.name.contains("nghttp2")) return@s
     pluginManager.apply("maven-publish")
 
     publishing {

@@ -15,6 +15,7 @@ includeSubModule("azure-runtime-cio")
 includeSubModule("azure-runtime-nghttp2")
 includeSubModule("cloudflare-runtime")
 includeSubModule("azure-test")
+includeSubModule("cloudflare-test")
 
 fun includeSubModule(name: String, path: String? = null) {
     include(":$name")

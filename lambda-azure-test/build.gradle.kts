@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.1.1"
+    id("cn.rtast.lambdafunction") version "0.1.4"
 }
 
 repositories {
@@ -29,5 +29,6 @@ kotlin {
 
 
 lambdaFunction {
+    enableAzureFunction = true
     customResources.addAll(*file("src/commonMain/resources").listFiles(), file("certs"))
 }

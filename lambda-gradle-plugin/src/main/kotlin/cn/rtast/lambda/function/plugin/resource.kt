@@ -7,7 +7,7 @@
 
 package cn.rtast.lambda.function.plugin
 
-fun readResource(path: String): String = LambdaFunctionExtension::class.java
+public fun readResource(path: String): String = LambdaFunctionExtension::class.java
     .classLoader
     .getResourceAsStream(path)!!
     .readAllBytes()

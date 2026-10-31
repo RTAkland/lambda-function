@@ -37,3 +37,7 @@ tasks.compileJava {
     sourceCompatibility = "11"
     targetCompatibility = "11"
 }
+
+kotlin {
+    explicitApi()
+}

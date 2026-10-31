@@ -7,7 +7,7 @@
 
 package cn.rtast.lambda.function.plugin
 
-fun currentPlatform(): String {
+public fun currentPlatform(): String {
     val os = System.getProperty("os.name").lowercase()
     return when {
         os.contains("win") -> "MingwX64"

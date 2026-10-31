@@ -20,8 +20,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.coroutines)
-            api(libs.ktor.server.core.js)
-            api(libs.kotlin.web)
         }
     }
 }

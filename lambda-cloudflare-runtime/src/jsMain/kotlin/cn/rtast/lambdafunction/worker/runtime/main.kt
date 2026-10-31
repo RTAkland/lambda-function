@@ -1,54 +1,57 @@
 /*
- * Copyright © 2026 rtakland
- * Author: rtakland
- * Date: 2026-10-27
+ * Copyright © 2026 RTAkland
+ * Author: RTAkland
+ * Date: 2026/1/3
  */
 
 
-@file:OptIn(ExperimentalJsExport::class, DelicateCoroutinesApi::class)
+/**
+ * This file is for internally use
+ */
+
+@file:OptIn(DelicateCoroutinesApi::class, ExperimentalJsExport::class)
 
 package cn.rtast.lambdafunction.worker.runtime
 
-import cn.rtast.lambdafunction.worker.runtime.engine.CloudflareWorker
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import cn.rtast.lambdafunction.worker.runtime.auth.AuthResult
+import cn.rtast.lambdafunction.worker.runtime.auth.credentials.HeaderCredential
+import cn.rtast.lambdafunction.worker.runtime.auth.provider.HeaderAuthenticator
+import cn.rtast.lambdafunction.worker.runtime.response.respondText
+import cn.rtast.lambdafunction.worker.runtime.route.route
+import cn.rtast.lambdafunction.worker.runtime.websocket.readText
+import cn.rtast.lambdafunction.worker.runtime.websocket.webSocket
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
-import org.w3c.dom.events.EventListener
-import web.http.Request
-import web.http.Response
+import org.w3c.fetch.Request
+import org.w3c.fetch.Response
+import kotlin.js.Promise
 
-public fun main() {
-    val eventListener = EventListener { event ->
-        val dyn = event.asDynamic()
-        GlobalScope.promise {
-            event.asDynamic().respondWith(handleRequest(dyn.request as Request))
-            js("addEventListener('fetch', eventListener)")
+public fun WorkerApplication.handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
+    route("/") {
+        respondText("Hello kotlin cloudflare worker")
+    }
+
+    webSocket("/ws") {
+        onMessage {
+            println(it.readText())
+        }
+
+        onClose {
         }
     }
-}
 
-private val server = embeddedServer(CloudflareWorker) {
-    serverConfig {
-        watchPaths = emptyList()
-    }
-
-    routing {
-        get("/") {
-            call.respond("Hello")
+    route("/protected", setOf(HttpMethod.GET), object : HeaderAuthenticator() {
+        override suspend fun authenticate(request: Request, credential: HeaderCredential?): AuthResult {
+            return if (credential?.value != null) AuthResult.OK else AuthResult.UNAUTHORIZED
         }
+    }) {
+        respondText("Success")
     }
+    handle(request)
 }
 
-public var started: Boolean = false
 
-public suspend fun ensuredStarted() {
-    if (!started) server.startSuspend(wait = true)
-    started = true
+public fun main(): Unit = runWorkerLambda {
+    handleRequest(it)
 }
-
-@JsExport
-public suspend fun handleRequest(request: Request): Response = server.engine.handle(request)
