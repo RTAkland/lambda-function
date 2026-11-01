@@ -7,12 +7,22 @@
 
 package cn.rtast.lambda.function.plugin
 
+import cn.rtast.lambdafunction.BuildConfig.LIB_VERSION
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
 public object CloudflareWorkerTask {
     public fun registerExtension(project: Project, ext: LambdaFunctionExtension) {
+        project.plugins.withId("org.jetbrains.kotlin.multiplatform") {
+            val kmp = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+            kmp.sourceSets.named("commonMain") {
+                it.dependencies {
+                    api("cn.rtast.lambdafunction:cloudflare-runtime:$LIB_VERSION")
+                }
+            }
+        }
         registerDevTasks(project, ext)
         registerDeployTasks(project, ext)
     }

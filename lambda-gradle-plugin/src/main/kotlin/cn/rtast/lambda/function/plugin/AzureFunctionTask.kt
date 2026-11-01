@@ -7,6 +7,7 @@
 
 package cn.rtast.lambda.function.plugin
 
+import cn.rtast.lambdafunction.BuildConfig.LIB_VERSION
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.bundling.Zip
@@ -18,6 +19,11 @@ public object AzureFunctionTask {
     public fun registerExtension(target: Project, ext: LambdaFunctionExtension): Unit = with(target) {
         plugins.withId("org.jetbrains.kotlin.multiplatform") {
             val kmp = extensions.getByType(KotlinMultiplatformExtension::class.java)
+            kmp.sourceSets.named("commonMain") {
+                it.dependencies {
+                    api("cn.rtast.lambdafunction:azure-runtime-cio:$LIB_VERSION")
+                }
+            }
 
             kmp.targets.configureEach { target ->
                 if (target is KotlinNativeTarget) {

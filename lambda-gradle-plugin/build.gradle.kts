@@ -15,7 +15,7 @@ dependencies {
 buildConfig {
     packageName(project.group.toString())
     buildConfigField("String", "KOTLIN_PLUGIN_ID", "\"${rootProject.group}\"")
-    buildConfigField("String", "KOTLIN_PLUGIN_VERSION", "\"${version}\"")
+    buildConfigField("String", "LIB_VERSION", "\"${rootProject.version}\"")
 }
 
 gradlePlugin {

@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    id("cn.rtast.lambdafunction") version "0.1.4"
+    id("cn.rtast.lambdafunction") version "0.1.5"
 }
 
 repositories {
@@ -15,7 +15,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":cloudflare-runtime"))
+//            implementation(project(":cloudflare-runtime"))
         }
     }
 
