@@ -34,7 +34,7 @@ pluginManagement {
 // build.gradle.kts
 plugins {
     // Replace the version to latest version
-    id("cn.rtast.lambdafunction") version "0.1.1"
+    id("cn.rtast.lambdafunction") version "0.1.4"
 }
 
 repositories {
@@ -44,9 +44,10 @@ repositories {
 
 /**
  * Configure the required json file to your own,
- * All options except `appName` are optional, if not set, plugin fallbak to builtin config
+ * All options except `appName` and `enableAzureFunction` are optional, if not set, plugin fallbak to builtin config
  */
 lambdaFunction {
+    enableAzureFunction = true
     appName = "myazurefunction"
     hostJsonFile = file("./host.json")
     functionJsonFile = file("./function.json")  // do not change this if you know what are you doing
@@ -77,7 +78,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation("cn.rtast.lambdafunction:azure-runtime-cio:0.1.1")
+            implementation("cn.rtast.lambdafunction:azure-runtime-cio:0.1.4")
         }
     }
 }
