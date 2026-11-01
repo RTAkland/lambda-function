@@ -12,15 +12,15 @@ import cn.rtast.lambdafunction.worker.runtime.WorkerApplication
 internal data class WebsocketRoute(
     val stringPath: String? = null,
     val regexPath: Regex? = null,
-    val block: WebsocketHandler,
+    val block: suspend WebsocketEventHandler.() -> Unit,
 )
 
 public fun WorkerApplication.webSocket(
     path: Regex,
-    block: WebsocketHandler,
+    block: suspend WebsocketEventHandler.() -> Unit,
 ): Unit = run { websocketRoutes.add(WebsocketRoute(regexPath = path, block = block)) }
 
 public fun WorkerApplication.webSocket(
     path: String,
-    block: WebsocketHandler,
+    block: suspend WebsocketEventHandler.() -> Unit,
 ): Unit = run { websocketRoutes.add(WebsocketRoute(stringPath = path, block = block)) }

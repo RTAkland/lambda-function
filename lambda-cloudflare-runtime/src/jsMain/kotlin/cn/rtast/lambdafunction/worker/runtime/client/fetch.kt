@@ -15,21 +15,11 @@ import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
 import kotlin.js.Promise
 
-/**
- * define fetch function externally
- */
-public external fun fetch(
-    input: String,
-    init: RequestInit = definedExternally,
-): Promise<Response>
+public external fun fetch(input: String, init: RequestInit = definedExternally): Promise<Response>
 
-/**
- * Get request raw body, http POST
- */
-public suspend fun Request.rawBody(): ByteArray =
+public suspend fun Request.readBytes(): ByteArray =
     this.arrayBuffer().await().toByteArray()
 
-/**
- * Get [URL] object
- */
-public val Request.Url: URL get() = URL(this.url)
+public suspend fun Request.readText(): String = readBytes().decodeToString()
+
+public val Request.asURL: URL get() = URL(this.url)

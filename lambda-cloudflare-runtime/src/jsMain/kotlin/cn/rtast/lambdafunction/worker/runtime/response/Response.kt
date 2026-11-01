@@ -10,7 +10,7 @@
 package cn.rtast.lambdafunction.worker.runtime.response
 
 import cn.rtast.lambdafunction.worker.runtime.WorkerApplication
-import cn.rtast.lambdafunction.worker.runtime._addCorsHeaders
+import cn.rtast.lambdafunction.worker.runtime.addCorsHeaders
 import org.khronos.webgl.Uint8Array
 import org.w3c.fetch.Response
 import org.w3c.fetch.ResponseInit
@@ -26,7 +26,7 @@ public fun WorkerApplication.respondBytes(
     respHeaders["Content-Type"] = contentType ?: "application/octet-stream"
     return Response(
         Uint8Array(bytes.toTypedArray()),
-        _addCorsHeaders(
+        addCorsHeaders(
             ResponseInit(
                 status = status.toShort(),
                 headers = respHeaders
@@ -44,7 +44,7 @@ public fun WorkerApplication.respondStream(
     headers.forEach { respHeaders[it.key] = it.value }
     return Response(
         stream,
-        _addCorsHeaders(
+        addCorsHeaders(
             ResponseInit(
                 status = status.toShort(),
                 headers = respHeaders
@@ -59,7 +59,7 @@ public fun WorkerApplication.respondEmpty(
 ): Response {
     val respHeaders: dynamic = js("{}")
     headers.forEach { respHeaders[it.key] = it.value }
-    return Response(null, _addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders)))
+    return Response(null, addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders)))
 }
 
 public fun WorkerApplication.respondText(
@@ -69,7 +69,7 @@ public fun WorkerApplication.respondText(
 ): Response {
     val respHeaders: dynamic = js("{}")
     headers.forEach { respHeaders[it.key] = it.value }
-    return Response(content, _addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders)))
+    return Response(content, addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders)))
 }
 
 public fun WorkerApplication.respondRedirect(
@@ -82,6 +82,6 @@ public fun WorkerApplication.respondRedirect(
     respHeaders["Location"] = location
     return Response(
         "Redirecting to $location",
-        _addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders))
+        addCorsHeaders(ResponseInit(status = status.toShort(), headers = respHeaders))
     )
 }

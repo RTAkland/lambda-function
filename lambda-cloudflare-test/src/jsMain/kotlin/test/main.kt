@@ -11,6 +11,8 @@ package test
 
 import cn.rtast.lambdafunction.worker.runtime.WorkerApplication
 import cn.rtast.lambdafunction.worker.runtime.response.respondText
+import cn.rtast.lambdafunction.worker.runtime.route.get
+import cn.rtast.lambdafunction.worker.runtime.route.post
 import cn.rtast.lambdafunction.worker.runtime.route.route
 import cn.rtast.lambdafunction.worker.runtime.runWorkerLambda
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -27,6 +29,12 @@ fun main() = runWorkerLambda {
 fun WorkerApplication.handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
     route("/") {
         respondText("Hello World")
+    }
+    get("/get") {
+        respondText("Hello")
+    }
+    post("/post") {
+        respondText("posted")
     }
     handle(request)
 }

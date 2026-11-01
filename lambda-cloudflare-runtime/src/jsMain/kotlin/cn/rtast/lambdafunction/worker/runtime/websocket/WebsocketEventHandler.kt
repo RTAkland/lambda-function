@@ -78,12 +78,10 @@ public class WebsocketEventHandler(public val request: Request) {
     }
 }
 
-public typealias WebsocketHandler = suspend WebsocketEventHandler.() -> Unit
-
 public fun MessageEvent.readText(): String =
     this.data.unsafeCast<String>()
 
-public fun MessageEvent.readByteArray(): ByteArray =
+public fun MessageEvent.readBytes(): ByteArray =
     this.data.unsafeCast<ArrayBuffer>().toByteArray()
 
 public fun MessageEvent.readBlob(): Blob =

@@ -14,4 +14,4 @@ import cn.rtast.lambdafunction.worker.runtime.auth.credentials.HeaderCredential
 internal inline fun String.packBasicCredential(): BasicCredential =
     with(this.split(":")) { BasicCredential(first(), last()) }
 
-internal inline fun String.packBearerCredential(): HeaderCredential = HeaderCredential(this)
+internal inline fun String.packHeaderCredential(): HeaderCredential = HeaderCredential(this)

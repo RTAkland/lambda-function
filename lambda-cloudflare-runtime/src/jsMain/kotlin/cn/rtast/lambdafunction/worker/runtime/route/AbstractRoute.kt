@@ -6,12 +6,11 @@
  */
 
 
-package cn.rtast.lambdafunction.worker.runtime.route.type
+package cn.rtast.lambdafunction.worker.runtime.route
 
 import cn.rtast.lambdafunction.worker.runtime.HttpMethod
 import cn.rtast.lambdafunction.worker.runtime.auth.credentials.HttpCredential
 import cn.rtast.lambdafunction.worker.runtime.auth.provider.Authenticator
-import cn.rtast.lambdafunction.worker.runtime.route.Handler
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 
@@ -25,7 +24,7 @@ internal interface AbstractRoute {
     /**
      * Route code handle block
      */
-    val block: Handler
+    val block: suspend (Request) -> Response
 
     /**
      * Allowed http methods
@@ -39,7 +38,6 @@ internal interface AbstractRoute {
 
     /**
      * A route handler to process incoming http request
-     * @see Handler
      */
     suspend fun handle(request: Request): Response = block.invoke(request)
 }

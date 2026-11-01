@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     id("cn.rtast.lambdafunction") version "0.1.4"
@@ -21,7 +19,10 @@ kotlin {
         }
     }
 
-    compilerOptions.freeCompilerArgs.addAll("-Xcompanion-blocks-and-extensions")
+    compilerOptions.freeCompilerArgs.addAll(
+        "-Xexpect-actual-classes",
+        "-Xcompanion-blocks-and-extensions"
+    )
 }
 
 lambdaFunction {

@@ -6,17 +6,18 @@
  */
 
 
-package cn.rtast.lambdafunction.worker.runtime.route.type
+package cn.rtast.lambdafunction.worker.runtime.route
 
 import cn.rtast.lambdafunction.worker.runtime.HttpMethod
 import cn.rtast.lambdafunction.worker.runtime.auth.credentials.HttpCredential
 import cn.rtast.lambdafunction.worker.runtime.auth.provider.Authenticator
-import cn.rtast.lambdafunction.worker.runtime.route.Handler
+import org.w3c.fetch.Request
+import org.w3c.fetch.Response
 
-internal data class RegexRoute(
-    val path: Regex,
-    override val block: Handler,
+internal data class StringRoute(
+    val path: String,
+    override val block: suspend (Request) -> Response,
     override val methods: Set<HttpMethod>,
-    override val type: RouteType = RouteType.Regex,
+    override val type: RouteType = RouteType.String,
     override val authenticator: Authenticator<HttpCredential>? = null,
 ) : AbstractRoute

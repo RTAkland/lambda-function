@@ -10,16 +10,15 @@ package cn.rtast.lambdafunction.worker.runtime
 
 import cn.rtast.lambdafunction.worker.runtime.auth.AuthResult
 import cn.rtast.lambdafunction.worker.runtime.auth.packBasicCredential
-import cn.rtast.lambdafunction.worker.runtime.auth.packBearerCredential
+import cn.rtast.lambdafunction.worker.runtime.auth.packHeaderCredential
 import cn.rtast.lambdafunction.worker.runtime.auth.provider.BasicAuthenticator
 import cn.rtast.lambdafunction.worker.runtime.auth.provider.HeaderAuthenticator
 import cn.rtast.lambdafunction.worker.runtime.config.CORSConfig
 import cn.rtast.lambdafunction.worker.runtime.response.respondEmpty
 import cn.rtast.lambdafunction.worker.runtime.response.respondText
-import cn.rtast.lambdafunction.worker.runtime.route.type.AbstractRoute
-import cn.rtast.lambdafunction.worker.runtime.route.type.RegexRoute
-import cn.rtast.lambdafunction.worker.runtime.route.type.StringRoute
-import cn.rtast.lambdafunction.worker.runtime.util.decodeBase64String
+import cn.rtast.lambdafunction.worker.runtime.route.AbstractRoute
+import cn.rtast.lambdafunction.worker.runtime.route.RegexRoute
+import cn.rtast.lambdafunction.worker.runtime.route.StringRoute
 import cn.rtast.lambdafunction.worker.runtime.websocket.WebsocketEventHandler
 import cn.rtast.lambdafunction.worker.runtime.websocket.WebsocketRoute
 import org.w3c.dom.events.EventListener
@@ -27,21 +26,20 @@ import org.w3c.dom.url.URL
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import org.w3c.fetch.ResponseInit
+import kotlin.io.encoding.Base64
 import kotlin.js.Promise
 
 /**
  * Kotlin cloudflare worker logic entrypoint class
  */
-public class WorkerApplication(
-    public val corsConfig: CORSConfig = CORSConfig(),
-) {
+public class WorkerApplication(public val corsConfig: CORSConfig = CORSConfig()) {
     internal val routes: MutableList<AbstractRoute> = mutableListOf()
     internal val websocketRoutes: MutableList<WebsocketRoute> = mutableListOf()
 
     public suspend fun handle(request: Request): Response {
         val url = URL(request.url)
         val path = url.pathname
-        val method = HttpMethod.fromString(request.method) ?: HttpMethod.GET
+        val method = request.httpMethod
         if (method == HttpMethod.OPTIONS && corsConfig.enabled) return respondEmpty()
         if (request.headers.get("upgrade") != null) {
             val route = websocketRoutes.firstOrNull { r ->
@@ -65,19 +63,16 @@ public class WorkerApplication(
             val allowMethods = matchedRoutes.flatMap { it.methods }.distinct().joinToString(", ")
             val headers: dynamic = js("{}")
             headers["Allow"] = allowMethods
-            return respondText("Method Not Allowed", 405)
+            return respondEmpty(405)
         }
 
         val auth = methodMatchedRoute.authenticator
         val responsePromise = if (auth != null) {
             val credential = when (auth) {
-                is BasicAuthenticator -> request.headers.get("authorization")
-                    ?.removePrefix("Basic ")
-                    ?.decodeBase64String
-                    ?.packBasicCredential()
+                is BasicAuthenticator -> request.headers.get("authorization")?.removePrefix("Basic ")
+                    ?.decodeBase64String()?.packBasicCredential()
 
-                is HeaderAuthenticator -> request.headers.get(auth.header.lowercase())
-                    ?.packBearerCredential()
+                is HeaderAuthenticator -> request.headers.get(auth.header.lowercase())?.packHeaderCredential()
             }
             when (auth.authenticate(request, credential)) {
                 AuthResult.OK -> methodMatchedRoute.handle(request)
@@ -87,6 +82,10 @@ public class WorkerApplication(
         } else methodMatchedRoute.handle(request)
         return responsePromise
     }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun String.decodeBase64String(): String =
+        Base64.decode(this.encodeToByteArray()).decodeToString()
 }
 
 public inline fun runWorkerLambda(crossinline block: WorkerApplication.(Request) -> Promise<Response>) {

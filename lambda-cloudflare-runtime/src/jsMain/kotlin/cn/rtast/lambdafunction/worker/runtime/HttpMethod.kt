@@ -31,8 +31,5 @@ public enum class HttpMethod {
     }
 }
 
-/**
- * Get parsed http method, if it's not a standard http method return GET
- */
 public val Request.httpMethod: HttpMethod
     get() = HttpMethod.fromString(this.method) ?: HttpMethod.GET

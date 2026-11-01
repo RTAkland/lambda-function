@@ -10,11 +10,8 @@ package cn.rtast.lambdafunction.worker.runtime
 
 import org.w3c.fetch.ResponseInit
 
-/**
- * Auto add cors response headers
- */
-@Suppress("FunctionName")
-internal fun WorkerApplication._addCorsHeaders(init: ResponseInit, ): ResponseInit {
+
+internal fun WorkerApplication.addCorsHeaders(init: ResponseInit): ResponseInit {
     val headers = if (this.corsConfig.enabled) {
         val corsHeaders = init.headers ?: js("{}")
         corsHeaders["Access-Control-Allow-Origin"] = corsConfig.origin
@@ -24,9 +21,5 @@ internal fun WorkerApplication._addCorsHeaders(init: ResponseInit, ): ResponseIn
         corsHeaders["Access-Control-Max-Age"] = "${corsConfig.maxAge}"
         corsHeaders
     } else init.headers
-    return ResponseInit(
-        headers = headers,
-        status = init.status,
-        statusText = init.statusText
-    )
+    return ResponseInit(init.status, init.statusText, headers)
 }
