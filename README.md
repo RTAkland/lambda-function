@@ -34,7 +34,7 @@ pluginManagement {
 // build.gradle.kts
 plugins {
     // Replace the version to latest version
-    id("cn.rtast.lambdafunction") version "0.1.4"
+    id("cn.rtast.lambdafunction") version "0.1.5"
 }
 
 repositories {
@@ -74,12 +74,6 @@ kotlin {
 
     targets.withType<KotlinNativeTarget>().configureEach {
         binaries { executable { entryPoint = "com.example.main" } }
-    }
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation("cn.rtast.lambdafunction:azure-runtime-cio:0.1.4")
-        }
     }
 }
 
